@@ -1,0 +1,10 @@
+/* стили для печати платежки */
+input {
+    display: none
+}
+a.back_store {
+    display: none;
+}
+table {
+    display: block;
+}

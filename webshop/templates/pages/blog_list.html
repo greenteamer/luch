@@ -1,0 +1,31 @@
+{% extends "catalog.html" %}
+{% block slider %}
+{% endblock %}
+{% block tri_bloka %}
+{% endblock %}
+
+{% block title %}
+{#{{ post.name }} - {{ site_name }}#}
+{% endblock %}
+
+{% block content %}
+
+    <h1>{{ test }}</h1>
+
+    {% if blog_section %}
+        {% for post in blog_section %}
+            <h2>{{ post.name }}</h2>
+            <p>{{ post.text|truncatewords:120|safe }}</p>
+        {% endfor %}
+    {% endif %}
+
+    {% if blog_posts %}
+        {% for post in blog_posts %}
+            <h2>{{ post.name }}</h2>
+            <p>{{ post.text|truncatewords:120|safe }}</p>
+            <a href="{{ post.url }}">читать подробнее</a>
+        {% endfor %}
+    {% endif %}
+
+
+{% endblock %}

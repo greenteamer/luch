@@ -1,0 +1,271 @@
+{% extends "catalog.html" %}
+{% load i18n %}
+{% load catalog_filters %}
+{% load thumbnail %}
+{% load cropping %}
+
+{% block product_js %}
+    <script src="{{ STATIC_URL }}js/slides.min.jquery.js"></script>
+    <script>
+		$(function(){
+			$('#products').slides({
+				preload: true,
+				preloadImage: 'img/loading.gif',
+				effect: 'slide, fade',
+				crossfade: true,
+				slideSpeed: 200,
+				fadeSpeed: 500,
+				generateNextPrev: true,
+				generatePagination: false
+			});
+		});
+	</script>
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/product.css">
+
+{% endblock %}
+
+{% block slider %}
+{% endblock %}
+{% block tri_bloka %}
+{% endblock %}
+
+{% block content %}
+    <div id="product_lict">
+            <div class="row row-fluid">
+
+                <div class="col-xs-12 product_text">
+                    <h1>{{ p.name }}</h1>
+                </div>
+
+
+                <div class="col-xs-5">
+{#                    {% thumbnail product_image.url "298x319" crop="center" as im %}#}
+{#                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">#}
+{#                    {% endthumbnail %}#}
+                    {% if images %}
+
+                        <div id="products_example">
+                            <div id="products">
+                                <div class="slides_container">
+                                    {% for image in images %}
+                                        <a name="">
+{#                                        {% thumbnail image.url "300x300" crop="center" as im %}#}
+{#                                            <img src="{{ im.url }}" >#}
+{#                                        {% endthumbnail %}#}
+{#                                            <img src="{% cropped_thumbnail image "cropping" scale=1%}">#}
+                                            <img src="/media/{{ image.url }}" width="300" height="300">
+                                        </a>
+                                    {% endfor %}
+                                </div>
+                                <ul class="pagination">
+                                    {% for image in images %}
+                                        <li><a href="#"><img src="/media/{{ image.url }}" width="55" alt=""/></a></li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+
+                    {% else %}
+                        <p>Нет фото</p>
+                    {% endif %}
+
+                </div>
+
+                <div class="tabbable">
+                    <div class="col-xs-7">
+
+                        <h2>Описание:</h2>
+                        <div class="tab-pane" id="description">{{ p.description|truncatewords:30|safe }}</div>
+                        <br/>
+                        <div class="row">
+                            <div class="col-xs-12" style="height: 40px;">
+                                <div class="row">
+                                    <div class="col-xs-6">Брэнд:</div>
+                                    <div class="col-xs-6">{{ p.brand_name.name }}</div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12" style="height: 40px;">
+                                <div class="row">
+                                    <div class="col-xs-6">Объем:</div>
+                                    <div class="col-xs-6">
+                                        <select onchange="Dajaxice.webshop.ajaxapp.change_atrs(Dajax.process, {'option':this.value})" size="1">
+                                            {% for atr in atrs %}
+                                                <option value="{{ atr.id }}">{{ atr.volume }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12" style="height: 40px;">
+                                <div class="row">
+                                    <div class="col-xs-6">Вес:</div>
+                                    <div class="col-xs-6"><span id="weight">{{ atrs_default.weight }} гр.</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="col-xs-7">
+                    <div class="row">
+                        <div class="price_cart">
+                            <div class="col-xs-6">
+                                {% if p.feel.count > 0 %}
+                                    <p>Выберите разновидность:</p> <br/>
+                                {% endif %}
+
+                                <div id="super_price" class="{% if p.get_atributes.new_price == 0.00 %}hidden{% endif %}">
+                                    <div class="price_was">
+                                        {% trans "Was" %}: <span id="price">{{ atrs_default.price }} {% trans "руб." %}</span>
+                                    </div>
+                                    <br/>
+                                    <div class="price_now">
+                                        <span id="new_price">{% trans "Now" %}: {{ atrs_default.new_price }} руб.</span>
+                                    </div>
+                                </div>
+                                <div id="old_price" class="{% if p.get_atributes.new_price != 0.00 %}hidden{% endif %}">
+                                    <span id="price_old">{% trans "Price" %}: {{ atrs_default.price }} {% trans "руб." %} </span>
+                                </div>
+
+{#                                {% if p.sale_price.new_price != 0.00 %}#}
+{#                                    <div class="price_was">#}
+{#                                        {% trans "Was" %}: <span>{{ p.sale_price.price }} {% trans "руб." %}</span>#}
+{#                                    </div>#}
+{#                                    <div class="price_now">#}
+{#                                        {% trans "Now" %}:<span> {{ p.sale_price.new_price }} {% trans "руб." %} *</span>#}
+{#                                    </div>#}
+{#                                    <p>*за объем: {{ p.sale_price.volume }} мл.</p>#}
+{#                                {% else %}#}
+{#                                    <p>{{ p.sale_price.price }} {% trans "руб." %}</p>#}
+{#                                {% endif %}#}
+
+
+                            </div>
+
+                            <div class="col-xs-6">
+                                <form method="post" action="." class="cart">{% csrf_token %}
+                                    <div class="hidden">
+                                        {{ form.product_slug }}
+                                    </div>
+                                    <div class="hidden">
+                                        <input id="atr_value" name="atr_value" type="hidden" value="{{ atrs.0.id }}"/>
+                                    </div>
+                                    {% if p.feel.count > 0 %}
+                                        <div class="feel">
+                                            {% if error.feel %}{{ error.feel }}<div class="error">{% endif %}
+{#                                            <label for="id_feel">Выберите вкус:</label>#}
+                                            <select name="feel" id="id_feel">
+                                                {% for feel in p.feel.all %}
+                                                    <option value="{{ feel.id }}">{{ feel.name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                            {% if error.feel %}</div>{% endif %}
+                                        </div>
+                                    {% endif %}
+                                    <div class="quantity">
+                                        <br/><label for="id_quantity">Количество:</label>
+                                        {{ form.quantity }}
+                                    </div>
+{#                                    <input class="btn btn-success" type="submit" value="{% trans "Add To Cart" %}"#}
+{#                                    name="submit" alt=" {% trans "Add To Cart" %}" />#}
+
+                                    <button class="btn btn-success" type="submit" name="submit">
+                                        <i class="icon-shopping-cart icon-white" style="margin-right: 5px;"></i><span>Добавить в корзину</span>
+                                    </button>
+
+                                </form>
+{#                                <form method="post" action="." class="cart">{% csrf_token %}#}
+{#                                    {{ form.as_p }}#}
+{#                                </form>#}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-12">
+                    <h4>Описание:</h4>
+                    <div class="tab-pane" id="description">{{ p.description|safe }}</div>
+                </div>
+
+{#                <div class="col-xs-12">#}
+{#                    <div class="row">#}
+{#                        <div class="col-xs-4">#}
+{#                            {% for image in images %}#}
+{#                                <div style="width: 300px; height: 300px; border: 1px solid #CCCCCC; margin-top: 10px;">#}
+{#                                    <img src="{% cropped_thumbnail image "cropping" scale=1%}">#}
+{#                                    {% thumbnail image.new_url "300x300"  as im %}#}
+{#                                        <img src="{{ im.url }}" >#}
+{#                                    {% endthumbnail %}#}
+{#                                </div>#}
+{#                            {% endfor %}#}
+{#                        </div>#}
+{##}
+{#                        <div class="col-xs-4">#}
+{#                            {% for image in images %}#}
+{#                                <div style="width: 300px; height: 300px; border: 1px solid #CCCCCC; margin-top: 10px;">#}
+{#                                    {% thumbnail image.new_image 430x360 box=image.cropping crop detail %}#}
+{#                                </div>#}
+{#                            {% endfor %}#}
+{#                        </div>#}
+{##}
+{#                        <div class="col-xs-4">#}
+{#                            {% for image in images %}#}
+{#                                <div style="width: 300px; height: 300px; border: 1px solid #CCCCCC; margin-top: 10px;">#}
+{#                                    {% thumbnail image.new_url "300x300"  as im %}#}
+{#                                        <img src="{{ im.url }}" >#}
+{#                                    {% endthumbnail %}#}
+{#                                </div>#}
+{#                            {% endfor %}#}
+{#                        </div>#}
+{##}
+{#                    </div>#}
+{#                </div>#}
+
+            </div>
+
+
+
+    </div>
+
+
+<div id="message_show" class="hidden">
+    <div class="message_inner">
+        <h6>Спасибо!</h6>
+        <p>В ближайшее время наш менеджер свяжется с Вами</p>
+        <button  class="btn btn-primary" onclick="closeMessage();">Закрыть</button>
+    </div>
+</div>
+{% endblock %}
+
+{#подключаем скрипт blueimp только на этой странице что бы не засорять код#}
+{% block bottom_script %}
+    <div id="blueimp-gallery" class="blueimp-gallery blueimp-gallery-controls " style="display: none;">
+        <div class="slides" style="width: 7684px;"></div>
+        <h3 class="title">Галерея</h3>
+        <a class="prev">‹</a>
+        <a class="next">›</a>
+        <a class="close">×</a>
+        <a class="play-pause"></a>
+        <ol class="indicator"></ol>
+    </div>
+    <script type="text/javascript" src="{{ STATIC_URL }}blueimp/blueimp-gallery.min.js"></script>
+    <script type="text/javascript">
+		document.getElementById('links').onclick = function (event) {
+			event = event || window.event;
+			var target = event.target || event.srcElement,
+				link = target.src ? target.parentNode : target,
+				options = {index: link, event: event},
+				links = this.getElementsByTagName('a');
+			blueimp.Gallery(links, options);
+		};
+		document.getElementById('links2').onclick = function (event) {
+			event = event || window.event;
+			var target = event.target || event.srcElement,
+				link = target.src ? target.parentNode : target,
+				options = {index: link, event: event},
+				links = this.getElementsByTagName('a');
+			blueimp.Gallery(links, options);
+		};
+	</script>
+{% endblock %}

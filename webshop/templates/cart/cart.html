@@ -1,0 +1,177 @@
+{% extends "catalog.html" %}
+{% load i18n %}
+{% load catalog_filters %}
+{% load thumbnail %}{% block content %}
+{% block slider %}
+{% endblock %}
+{% block tri_bloka %}
+{% endblock %}
+
+{% block onload_cart_script %}
+    <script>
+        window.onload = function(){
+            Dajaxice.webshop.ajaxapp.onload_cart(Dajax.process,{});
+        }
+    </script>
+{% endblock %}
+
+        <div id="cart">
+{#            <div class="row">#}
+
+                <div class="col-xs-12">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <h1>Ваша корзина</h1>
+                        </div>
+                    </div>
+                </div>
+
+                {#вывод промокода#}
+                <div class="col-xs-12 kupon">
+                    <p style=" color: red; ">Введите Ваш купон - промокод:</p>
+                    <form method="post" action=".">{% csrf_token %}
+                        <input type="text" name="cupon" value="" id="cupon" size="10" style=" width: 147px; margin-right: 10px;"/>
+                        <button class="btn btn-success" type="submit" name="update_cupon">
+                            <i class="icon-refresh icon-white" style="margin-right: 5px;"></i><span>Пересчитать</span>
+                        </button>
+                    </form>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">{% trans "Product" %}</th>
+                                <th scope="col">Характеристики</th>
+                                <th scope="col">{% trans "Price" %}</th>
+                                <th>Кол-во</th>
+                                <th></th>
+                                <th></th>
+                                <th scope="col" class="right">{% trans "Total" %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if cart_items %}
+                                {% for item in cart_items %}
+                            <tr>
+                                <td>
+{#                                    {% thumbnail item.get_default_image "50x50" crop="center" as im %}#}
+                                        <img class="item_img" src="/media/{{ item.get_default_image }}" width="50" height="50">
+{#                                    {% endthumbnail %}#}
+                                    <a href="{{ item.get_absolute_url }}" class="cart">
+                                    {{ item.name }}
+                                    </a>
+                                </td>
+                                <td>
+                                <div class="panel-group" id="accordion">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <h4 class="panel-title">
+                                                <a class="accordion_button" data-toggle="collapse" data-parent="#accordion" href="#item{{ item.id }}">Подробнее <i class="fa fa-caret-down"></i></a>
+                                            </h4>
+                                        </div>
+                                        <div id="item{{ item.id }}" class="panel-collapse collapse" style="height: auto;">
+                                            <div class="panel-body" style="text-align: left">
+                                                <span><i class="fa fa-shopping-cart"></i> {{ item.atributes.volume }} мл.</span> <br/>
+                                                <span><i class="fa fa-tachometer"></i> {{ item.atributes.weight }} гр.</span> <br/>
+                                                <span><i class="fa fa-cutlery"></i> {{ item.feel.name }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                </td>
+                                <td>
+                                    {{ item.price }} <i class="fa fa-rub"></i>
+                                </td>
+                                <td class="right">
+                                    <form method="post" action="." class="cart">{% csrf_token %}
+                                        {#<label class="control-label" for="quantity">{% trans "Quantity" %}:</label>#}
+                                        <input type="text" name="quantity" value="{{ item.quantity }}" id="quantity" size="2" class="quantity" maxlength="5" />
+                                        <input type="hidden" name="item_id" value="{{ item.id }}" />
+                                </td>
+                                <td>
+                                        <input type="hidden" name="item_id" value="{{ item.id }}" />
+                                        <button class="btn btn-success" type="submit" name="update">
+                                        <i class="icon-refresh icon-white"></i> <span>Обновить</span></button>
+                                    </form>
+                                </td>
+                                <td>
+                                    <form method="post" action="." class="cart">{% csrf_token %}
+                                        <input type="hidden" name="item_id" value="{{ item.id }}" />
+                                        <button class="btn btn-danger" type="submit" name="remove">
+                                        <i class="icon-trash icon-white"></i> {% trans "Remove" %}</button>
+                                    </form>
+                                </td>
+                                <td class="right">{{ item.total }} <i class="fa fa-rub"></i></td>
+                            </tr>
+                            {% endfor %}
+                            {% else %}
+                            <tr>
+                                <td colspan="6" style="height:30px;">
+                                    {% trans "Your cart is empty" %}
+                                </td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+
+                        <tfoot>
+                            <tr>
+                                <th colspan="5">Стоимость товаров:</th>
+                                <th>{{ cart_subtotal }} {% trans "руб." %}</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+{#            таблица доставки#}
+            {% if cart_items %}
+                <div class="col-xs-7 delivery_all">
+                    <div class="row">
+                        <div class="col-xs-7">
+                            <form action="." method="POST" id="rb_delivery">
+                                {% csrf_token %}
+                                {{ deliveryForm.delivery.errors }}
+                                <label for="id_delivery"><i class="fa fa-plane"></i> <strong>Выберите способ доставки: </strong></label>
+                                {{ deliveryForm.delivery }}
+                            </form>
+                        </div>
+                        <div class="col-xs-5 current_delivery">
+                            <h4><strong>Текущий способ доставки:</strong></h4>
+                            <p>Способ доставки: <span id="type_ajax">{{ delivery.delivery_type }}</span></p>
+                            <p style="{% if delivery.is_to_big %}color: red;{% endif %}">Вес посылки {% if delivery.is_to_big %}слишком большой{% endif %}: <span id="weight_ajax">{{ delivery.weight }} гр.</span></p>
+                            <p>{% if not delivery.is_to_big %}Стоимость доставки: <span id="price_ajax">{{ delivery.delivery_price }} руб.</span> {% endif %}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-5">
+                    {#вывод подарков#}
+                    {% if cart_gift %}
+                        <div class="gift_in_cart">
+                            <h4><strong>Для Вас есть подарок!</strong></h4>
+                                <div style="">
+                                    {% thumbnail cart_gift.url "100x100" crop="center" as im %}
+                                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" align="left">
+                                    {% endthumbnail %}
+                                    <p>{{ cart_gift.name  }}</p>
+                                    <p>{{ cart_gift.description|truncatewords:100|safe }}</p>
+                                </div>
+                        </div>
+                    {% endif %}
+                    <p style="font-weight: bold;" id="price">{% if not delivery.is_to_big %}<span>ИТОГО: </span>{{ cart_total }} <span>руб.</span>{% endif %}</p>
+                </div>
+                <div class="col-xs-12">
+                    <form style="float: right;" name="testrb" method="post" action="." class="cart">{% csrf_token %}
+                        <button {% if delivery.is_to_big %}disabled="disabled"{% endif %} class="btn btn-success" type="submit" name="checkout">
+                        <i class="icon-shopping-cart icon-white" style="margin-right: 5px;"></i><span>Оформить заказ</span></button>
+                    </form>
+                </div>
+            {% endif %}
+{#        </div>#}
+    </div>
+
+
+
+{% endblock %}
+
+
