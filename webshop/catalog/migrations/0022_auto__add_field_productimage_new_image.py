@@ -10,7 +10,7 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         # Adding field 'ProductImage.new_image'
         db.add_column('product_images', 'new_image',
-                      self.gf('pyuploadcare.dj.models.ImageField')(default='default'),
+                      self.gf('django.db.models.fields.files.FileField')(default='default'),
                       keep_default=False)
 
 
@@ -99,7 +99,7 @@ class Migration(SchemaMigration):
             'description': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'image': ('django.db.models.fields.files.FileField', [], {'max_length': '100'}),
-            'new_image': ('pyuploadcare.dj.models.ImageField', [], {}),
+            'new_image': ('django.db.models.fields.files.FileField', [], {}),
             'product': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['catalog.Product']"})
         },
         'catalog.productvolume': {
