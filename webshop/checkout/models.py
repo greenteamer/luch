@@ -55,6 +55,9 @@ class BaseOrderInfo(models.Model):
 class Order(BaseOrderInfo):
     """Класс для заказа"""
 
+    class Meta:
+        verbose_name_plural = u'Заказы'
+
     # Константы статуса
     SUBMITTED = 1
     PAID = 2

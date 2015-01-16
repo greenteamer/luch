@@ -54,7 +54,7 @@ class ProductAdmin(ImageCroppingMixin, admin.ModelAdmin):
     inlines = [ProductVolumeAdmin, ProductImageAdmin]
     # search_field = ['name', 'description', 'meta_keywords', 'meta_description']
     search_fields = ['name']
-    exclude = ('meta_keywords', 'meta_description')
+    exclude = ('meta_keywords', 'meta_description', 'feel', 'is_aqua', 'not_available')
     readonly_fields = ('created_at', 'updated_at',)
     # имя продукта для генерации чистой ссылки
     prepopulated_fields = {'slug': ('name',)}
