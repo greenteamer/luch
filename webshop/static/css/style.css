@@ -1173,7 +1173,7 @@ a#accordion {
     margin-bottom: 5px;
 }
 .panel-default .panel-heading:hover a {
-    color: #53a02d;
+    color: #21b0ee;
     text-decoration: none;
 }
 .panel-default .panel-body {
@@ -1244,8 +1244,8 @@ input#order_submit {
     text-align: center;
 }
 .review_button {
-    background-color: #5cb85c;
-    border-color: #4cae4c;
+    background-color: #fff035;
+    border-color: #fff035;
     display: inline-block;
     margin-bottom: 0;
     font-weight: 400;
@@ -1259,7 +1259,7 @@ input#order_submit {
     font-size: 14px;
     line-height: 1.42857143;
     border-radius: 4px;
-    color: #fff;
+    color: #303030;
 }
 .review_form {
     margin-top: 60px;
@@ -1453,7 +1453,7 @@ input#order_submit {
 
 .btn-success {
     color: #545454;
-    background-color: #093b85 ;
+    background-color: #fff035 ;
     border-radius: 0;
     border: 0;
 }
@@ -1509,7 +1509,7 @@ header .container {
     color: #454545;
 }
 .navbar-search .btn-success {
-    
+
 }
 
 /*#cart .panel-group {*/
