@@ -12,4 +12,4 @@ class SearchTermAdmin(admin.ModelAdmin):
     exclude = ('user', 'ip_address',)
 
 # Регистрирация моделей в админке
-admin.site.register(SearchTerm, SearchTermAdmin)
+# admin.site.register(SearchTerm, SearchTermAdmin)
