@@ -132,7 +132,6 @@ def product_view(request, product_slug, template_name="catalog/product.html"):
         parent_url = parent_cat.get_absolute_url()
         request.breadcrumbs([('%s' % parent_cat.name, parent_url), ('%s' % c.name, c.get_absolute_url()), ('%s' % p.name, request.path_info)])
 
-
     page_title = p.name
     meta_keywords = p.meta_keywords
     meta_description = p.meta_description
