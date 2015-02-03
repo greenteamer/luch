@@ -5,6 +5,7 @@ import urllib
 from django import template
 
 from webshop.search.forms import SearchForm
+from webshop.catalog.forms import MainForm
 
 
 register = template.Library()
@@ -15,6 +16,13 @@ def search_box(request):
     """Вставка для отображения формы поиска"""
     query = request.GET.get('query','')
     form = SearchForm({'query': query })
+    return {'form': form }
+
+@register.inclusion_tag("tags/main_form.html")
+def main_form(request):
+    """Вставка для отображения формы поиска"""
+    query = request.GET.get('query','')
+    form = MainForm()
     return {'form': form }
 
 @register.inclusion_tag('tags/pagination_links.html')
