@@ -1,7 +1,25 @@
-<a class="btn btn-default" href="">Вызвать специалиста</a>
-<div>
-    <form action="." method="post">{% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Submit" />
-    </form>
+<button class="btn btn-success btn-lg" data-toggle="modal" data-target="#myModal">Вызвать специалиста</button>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">Отправить заявку</h4>
+      </div>
+      <div class="modal-body">
+
+          <form action="." method="post" id="my_form">
+            {% csrf_token %}
+            {{ form.name }}
+            {{ form.phone }}
+      </div>
+              <div class="modal-footer">
+                <input id="id_submit" class="btn btn-primary" value="Отправить" type="submit"">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+              </div>
+        </form>
+    </div>
+  </div>
 </div>

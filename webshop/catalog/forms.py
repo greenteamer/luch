@@ -90,6 +90,6 @@ class ProductOneClickForm(forms.ModelForm):
         # }
 
 class MainForm(forms.Form):
-    name = forms.CharField(max_length=100)
-    phone = forms.CharField(max_length=100)
+    name = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'placeholder': u'Ваше имя'}))
+    phone = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'placeholder': u'Ваш телефон'}))
 

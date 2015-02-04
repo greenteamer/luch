@@ -1412,6 +1412,24 @@ input#order_submit {
     margin-bottom: 50px;
     /*margin-top: 50px;*/
 }
+.btn.btn-default {
+    border-radius: 0!important;
+    padding: 9px 20px;
+    margin-top: 8px;
+    font-size: 12px;
+    text-transform: uppercase;
+}
+.modal-body #id_name,
+.modal-body #id_phone {
+    padding: 10px;
+}
+.table-responsive {
+    overflow: inherit!important;
+}
+.btn.btn-success span,
+.btn.btn-success i {
+    color:#fff;
+}
 #cart .panel-title {
     height: 20px;
 } 
